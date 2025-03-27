@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GetCarFixed - Customer Dashboard</title>
+    <style>
+        :root {
+            --primary-color: #e63946;
+            --secondary-color: #f1faee;
+            --text-color: #1d3557;
+            --light-color: #f8f9fa;
+            --accent-color: #457b9d;
+            --border-color: #ddd;
+            --success-color: #2a9d8f;
+            --warning-color: #e9c46a;
+            --danger-color: #e76f51;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+        
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background-color: var(--text-color);
+            color: white;
+            padding: 2rem 0;
+        }
+        
+        .sidebar-header {
+            padding: 0 1.5rem 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 1.5rem;
+        }
+        
+        .sidebar-header h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .sidebar-header h1 span {
+            margin-left: 0.5rem;
+        }
+        
+        .sidebar-menu {
+            list-style: none;
+        }
+        
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .sidebar-menu a {
+            display: block;
+            padding: 0.75rem 1.5rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .sidebar-menu a.active {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .sidebar-menu a i {
+            margin-right: 0.5rem;
+        }
+        
+        .main-content {
+            flex: 1;
+            overflow: auto;
+        }
+        
+        .topbar {
+            background-color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .search-bar {
+            flex: 1;
+            margin: 0 2rem;
+            position: relative;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 0.5rem 1rem 0.5rem 2.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        .search-bar::before {
+            content: "🔍";
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 0.75rem;
+        }
+        
+        .user-name {
+            font-weight: 500;
+        }
+        
+        .user-role {
+            font-size: 0.8rem;
+            color: #777;
+        }
+        
+        .content {
+            padding: 2rem;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .dashboard-header {
+            margin-bottom: 2rem;
+        }
+        
+        .dashboard-header h2 {
+            font-size: 1.75rem;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        
+        .card-title {
+            font-weight: 500;
+        }
+        
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background-color: rgba(230, 57, 70, 0.1);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+        
+        .card-body {
+            margin-bottom: 1rem;
+        }
+        
+        .card-value {
+            font-size: 1.75rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-label {
+            color: #777;
+            font-size: 0.9rem;
+        }
+        
+        .card-footer {
+            font-size: 0.85rem;
+        }
+        
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .table th, .table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .table th {
+            background-color: var(--light-color);
+            font-weight: 500;
+        }
+        
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .status-badge.completed {
+            background-color: rgba(42, 157, 143, 0.1);
+            color: var(--success-color);
+        }
+        
+        .status-badge.in-progress {
+            background-color: rgba(233, 196, 106, 0.1);
+            color: var(--warning-color);
+        }
+        
+        .status-badge.scheduled {
+            background-color: rgba(69, 123, 157, 0.1);
+            color: var(--accent-color);
+        }
+        
+        .status-badge.pending {
+            background-color: rgba(231, 111, 81, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #c1121f;
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .form-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+        
+        .diagnostics-report {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 2rem;
+        }
+        
+        .report-header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .report-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .report-info {
+            color: #777;
+            margin-bottom: 0.5rem;
+        }
+        
+        .report-car-details {
+            margin-bottom: 1.5rem;
+        }
+        
+        .report-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .report-section-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.75rem;
+            color: var(--accent-color);
+        }
+        
+        .report-list {
+            list-style: none;
+        }
+        
+        .report-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .report-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .report-item-status {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        
+        .report-item-status.good {
+            background-color: var(--success-color);
+        }
+        
+        .report-item-status.warning {
+            background-color: var(--warning-color);
+        }
+        
+        .report-item-status.critical {
+            background-color: var(--danger-color);
+        }
+        
+        .report-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .report-recommendation {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .report-recommendation h4 {
+            margin-bottom: 0.5rem;
+            color: var(--accent-color);
+        }
+        
+        .center-align {
+            margin: 0 auto;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 1rem 0;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>🔧 <span>GetCarFixed</span></h1>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#" class="active" data-tab="dashboard-tab">📊 Dashboard</a></li>
+                <li><a href="#" data-tab="schedule-pickup-tab">🚚 Schedule a Pickup</a></li>
+                <li><a href="#" data-tab="drop-car-tab">🚗 Drop My Car</a></li>
+                <li><a href="#" data-tab="diagnostics-tab">📋 Diagnostic Reports</a></li>
+                <li><a href="#" data-tab="vehicles-tab">🛞 My Vehicles</a></li>
+                <li><a href="#" data-tab="invoices-tab">💰 Invoices & Payments</a></li>
+                <li><a href="#" data-tab="appointments-tab">📅 Appointments</a></li>
+                <li><a href="#" data-tab="settings-tab">⚙️ Settings</a></li>
+                <li><a href="login.html">🚪 Logout</a></li>
+            </ul>
+        </div>
+        
+        <div class="main-content">
+            <div class="topbar">
+                <div class="menu-toggle">☰</div>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">JD</div>
+                    <div>
+                        <div class="user-name">John Doe</div>
+                        <div class="user-role">Customer</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="content">
+                <!-- Dashboard Tab -->
+                <div id="dashboard-tab" class="tab-content active">
+                    <div class="dashboard-header">
+                        <h2>Customer Dashboard</h2>
+                        <p>Welcome back, John! Here's an overview of your vehicles and services.</p>
+                    </div>
+                    
+                    <div class="dashboard-cards">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Active Vehicles</div>
+                                <div class="card-icon">🚗</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-value">2</div>
+                                <div class="card-label">Registered vehicles</div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#" data-tab="vehicles-tab" class="tab-link">View all vehicles</a>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Upcoming Services</div>
+                                <div class="card-icon">🔧</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-value">1</div>
+                                <div class="card-label">Scheduled appointments</div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#" data-tab="appointments-tab" class="tab-link">View all appointments</a>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Service History</div>
+                                <div class="card-icon">📋</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-value">5</div>
+                                <div class="card-label">Completed services</div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#" data-tab="diagnostics-tab" class="tab-link">View service history</a>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="card-title">Loyalty Points</div>
+                                <div class="card-icon">⭐</div>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-value">250</div>
+                                <div class="card-label">Points available</div>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#">Redeem points</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-header">
+                        <h3>Recent Service History</h3>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Vehicle</th>
+                                    <th>Service</th>
+                                    <th>Status</th>
+                                    <th>Total</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Mar 15, 2025</td>
+                                    <td>Toyota Camry (2019)</td>
+                                    <td>Oil Change & Tire Rotation</td>
+                                    <td><span class="status-badge completed">Completed</span></td>
+                                    <td>$89.99</td>
+                                    <td><a href="#" class="btn btn-outline">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Feb 28, 2025</td>
+                                    <td>Honda Accord (2020)</td>
+                                    <td>Brake Service</td>
+                                    <td><span class="status-badge completed">Completed</span></td>
+                                    <td>$249.99</td>
+                                    <td><a href="#" class="btn btn-outline">View Details</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Mar 25, 2025</td>
+                                    <td>Toyota Camry (2019)</td>
+                                    <td>Diagnostics & Tuning</td>
+                                    <td><span class="status-badge in-progress">In Progress</span></td>
+                                    <td>$199.99</td>
+                                    <td><a href="#" class="btn btn-outline">View Details</a></td>
+                                </tr>
+                                <tr>
