@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GetCarFixed - Login Portal</title>
+    <style>
+        :root {
+            --primary-color: #e63946;
+            --secondary-color: #f1faee;
+            --text-color: #1d3557;
+            --light-color: #f8f9fa;
+            --accent-color: #457b9d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: var(--secondary-color);
+        }
+        
+        .container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .login-container {
+            display: flex;
+            max-width: 900px;
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .login-image {
+            flex: 1;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('/api/placeholder/600/900');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .login-image h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .login-image p {
+            font-size: 1.1rem;
+            max-width: 80%;
+        }
+        
+        .login-form {
+            flex: 1;
+            padding: 3rem;
+        }
+        
+        .form-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .form-header h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-header p {
+            color: #777;
+        }
+        
+        .toggle-container {
+            display: flex;
+            margin-bottom: 2rem;
+            background-color: var(--light-color);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .toggle-btn {
+            flex: 1;
+            padding: 0.75rem 0;
+            text-align: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .toggle-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+        }
+        
+        .remember-me input {
+            margin-right: 0.5rem;
+        }
+        
+        .forgot-password {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #c1121f;
+        }
+        
+        .signup-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .signup-link a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+                max-width: 90%;
+            }
+            
+            .login-image {
+                display: none;
+            }
+            
+            .login-form {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-container">
+            <div class="login-image">
+                <h1>GetCarFixed</h1>
+                <p>The most trusted auto repair and tuning service. Login to schedule services or check your vehicle status.</p>
+            </div>
+            <div class="login-form">
+                <div class="form-header">
+                    <h2>Welcome Back</h2>
+                    <p>Please login to your account</p>
+                </div>
+                
+                <div class="toggle-container">
+                    <button id="customer-toggle" class="toggle-btn active">Customer</button>
+                    <button id="admin-toggle" class="toggle-btn">Admin</button>
+                </div>
+                
+                <form id="customer-form">
+                    <div class="form-group">
+                        <label for="customer-email">Email</label>
+                        <input type="email" id="customer-email" placeholder="your@email.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="customer-password">Password</label>
+                        <input type="password" id="customer-password" placeholder="••••••••" required>
+                    </div>
+                    
+                    <div class="form-footer">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember-me">
+                            <label for="remember-me">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-password">Forgot password?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn">Login</button>
+                    
+                    <div class="signup-link">
+                        Don't have an account? <a href="#">Sign up</a>
+                    </div>
+                </form>
+                
+                <form id="admin-form" style="display: none;">
+                    <div class="form-group">
+                        <label for="admin-username">Admin Username</label>
+                        <input type="text" id="admin-username" placeholder="admin" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="admin-password">Password</label>
+                        <input type="password" id="admin-password" placeholder="••••••••" required>
+                    </div>
+                    
+                    <div class="form-footer">
+                        <div class="remember-me">
+                            <input type="checkbox" id="admin-remember-me">
+                            <label for="admin-remember-me">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-password">Forgot password?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn">Admin Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const customerToggle = document.getElementById('customer-toggle');
+            const adminToggle = document.getElementById('admin-toggle');
+            const customerForm = document.getElementById('customer-form');
+            const adminForm = document.getElementById('admin-form');
+            
+            customerToggle.addEventListener('click', function() {
+                customerToggle.classList.add('active');
+                adminToggle.classList.remove('active');
+                customerForm.style.display = 'block';
+                adminForm.style.display = 'none';
+            });
+            
+            adminToggle.addEventListener('click', function() {
+                adminToggle.classList.add('active');
+                customerToggle.classList.remove('active');
+                adminForm.style.display = 'block';
+                customerForm.style.display = 'none';
+            });
+            
+            // Handle customer login form submission
+            customerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('customer-email').value;
+                const password = document.getElementById('customer-password').value;
+                
+                // For demo purposes, we'll use some hardcoded credentials
+                if (email === 'customer@example.com' && password === 'password') {
+                    // Redirect to customer dashboard
+                    window.location.href = 'customer-dashboard.html';
+                } else {
+                    alert('Invalid credentials. For demo, use customer@example.com / password');
+                }
+            });
+            
+            // Handle admin login form submission
+            adminForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('admin-username').value;
+                const password = document.getElementById('admin-password').value;
+                
+                // For demo purposes, we'll use some hardcoded credentials
+                if (username === 'admin' && password === 'admin123') {
+                    // Redirect to admin dashboard
+                    window.location.href = 'admin-dashboard.html';
+                } else {
+                    alert('Invalid admin credentials. For demo, use admin / admin123');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
